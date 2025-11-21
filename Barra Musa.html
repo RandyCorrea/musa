@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barra Musa - Menú</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .container {
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            header h1 {
+                font-size: 2em;
+            }
+
+            .category-header h2 {
+                font-size: 1.3em;
+            }
+
+            .item-name {
+                font-size: 0.95em;
+            }
+
+            .item-price {
+                font-size: 1em;
+            }
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .menu-container {
+            padding: 30px 20px;
+        }
+
+        .category {
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .category:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .category-header:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .category-header h2 {
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .category-header .arrow {
+            font-size: 1.5em;
+            transition: transform 0.3s ease;
+        }
+
+        .category-header.active .arrow {
+            transform: rotate(180deg);
+        }
+
+        .category-content {
+            display: none;
+            background: #f9f9f9;
+        }
+
+        .category-content.active {
+            display: block;
+        }
+
+        .item {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .item-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .item-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+            flex: 1;
+        }
+
+        .item-price {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍹 BARRA MUSA 🍸</h1>
+            <p>Experiencia de Coctelería Premium</p>
+        </header>
+
+        <div class="menu-container" id="menuContainer"></div>
+    </div>
+
+    <script>
+        const menuData = {
+            "🎨 Cocktails de Autor": [
+                {name: "🌴 Musa Tropical", price: "$9.900"},
+                {name: "🍓 Natalia", price: "$8.900"},
+                {name: "🍎 Eva", price: "$9.900"},
+                {name: "🎨 A Tu Pinta", price: "$10.900"},
+                {name: "🏝️ Ohana", price: "$10.900"},
+                {name: "🌫️ Detrás de la Niebla", price: "$10.900"},
+                {name: "🍅 Caprese", price: "$10.900"}
+            ],
+            "⭐ Mojitos": [
+                {name: "🥃 Jagger", price: "$11.500"},
+                {name: "🍾 Espumante", price: "$11.000"},
+                {name: "🇨🇺 Cubano", price: "$11.900"},
+                {name: "🍇 Sabores", price: "$11.900"},
+                {name: "🍊 Ramazzotti", price: "$13.500"},
+                {name: "👑 Corona", price: "$14.000"},
+                {name: "🇵🇱 Polaco", price: "$13.000"},
+                {name: "🎩 Royal", price: "$11.500"},
+                {name: "🍀 Irlandés", price: "$12.500"},
+                {name: "🔥 Fire Maracuyá", price: "$12.000"},
+                {name: "🌈 Irlandés Sabores", price: "$13.000"}
+            ],
+            "🥃 Pisco Sour": [
+                {name: "🇵🇪 Tradicional Peruano", price: "$12.900"},
+                {name: "🌺 Tradicional Peruano Sabores", price: "$13.500"},
+                {name: "🇨🇱 Tradicional Chileno", price: "$10.500"},
+                {name: "🍋 Tradicional Chileno Sabores", price: "$11.500"},
+                {name: "🐓 Pisco Cuatro Gallos Tradicional", price: "$16.000"},
+                {name: "🎭 Pisco Cuatro Gallos Sabores", price: "$17.000"}
+            ],
+            "🍋 Sours Especiales": [
+                {name: "🥃 Whisky Sour", price: "$12.000"},
+                {name: "🍒 Amaretto Sour", price: "$11.500"},
+                {name: "🍷 Negroni Sour", price: "$17.500"},
+                {name: "🗽 New York Sour", price: "$18.000"},
+                {name: "🥭 Mango Sour", price: "$10.000"},
+                {name: "💛 Maracuyá Sour", price: "$10.000"}
+            ],
+            "🍯 Macerados Musa": [
+                {name: "🍑 Huesillo Naranja", price: "$14.900"},
+                {name: "☕ Clavo de Olor, Canela y Naranja", price: "$14.900"},
+                {name: "🫐 Del Bosque: Frutilla, Arándanos y Frambuesa", price: "$14.900"}
+            ],
+            "🌿 Caipirinha, Caipiroska": [
+                {name: "🌿 Tradicional", price: "$10.500"},
+                {name: "🍹 Sabores", price: "$11.000"}
+            ],
+            "🍸 Cocktails Clásicos": [
+                {name: "🌅 Tequila Sunrise", price: "$10.500"},
+                {name: "🧂 Tequila Margarita", price: "$10.500"},
+                {name: "🕊️ Paloma", price: "$12.500"},
+                {name: "💗 Cosmopolitan", price: "$11.000"},
+                {name: "🍅 Bloody Mary", price: "$13.500"},
+                {name: "👗 White Lady", price: "$12.500"},
+                {name: "🐝 Bee's Knees", price: "$11.500"},
+                {name: "🎭 Hanky Panky", price: "$13.000"},
+                {name: "🇫🇷 French 75", price: "$13.000"},
+                {name: "🍸 Martini Dry", price: "$12.500"},
+                {name: "🔴 Negroni", price: "$13.000"},
+                {name: "🏙️ Manhattan", price: "$11.500"},
+                {name: "🍷 Sangria", price: "$12.500"},
+                {name: "🫚 Moscow o London Mule", price: "$14.500"},
+                {name: "🥃 Old Fashioned", price: "$13.000"},
+                {name: "☕ Carajillo", price: "$12.500"},
+                {name: "🔩 Clavo Oxidado", price: "$13.000"},
+                {name: "🇨🇺 Cuba Libre", price: "$11.500"},
+                {name: "☕ Espresso Martini", price: "$12.500"},
+                {name: "🥒 Tom y John Collins", price: "$11.500"},
+                {name: "🍋 Daiquiri", price: "$11.500"},
+                {name: "🌈 Daiquiri Sabores", price: "$13.000"},
+                {name: "⚪ Pisco Blanco", price: "$11.500"},
+                {name: "⚫ Pisco Negro", price: "$11.500"},
+                {name: "💙 Tequila Blue", price: "$10.500"},
+                {name: "🥥 Piña Colada", price: "$11.000"},
+                {name: "🥭 Mango Colado", price: "$10.500"}
+            ],
+            "🍊 Spritz": [
+                {name: "🍊 Ramazzotti", price: "$13.000"},
+                {name: "🟠 Aperol", price: "$13.000"},
+                {name: "🫐 Chambord", price: "$13.000"},
+                {name: "🌸 Saint Germain", price: "$13.000"},
+                {name: "🔴 Campari", price: "$13.000"}
+            ],
+            "🌿 Gin": [
+                {name: "🥒 Hendrick's", price: "$17.000"},
+                {name: "🌺 Hendrick's Variedad", price: "$17.500"},
+                {name: "🇬🇧 Beefeater London", price: "$11.000"},
+                {name: "🌸 Beefeater Pink", price: "$11.500"},
+                {name: "💎 Bombay Sapphire", price: "$12.500"},
+                {name: "🌲 Tanqueray", price: "$11.000"},
+                {name: "👑 Tanqueray Royale", price: "$13.000"},
+                {name: "🍊 Tanqueray Sevilla", price: "$13.000"},
+                {name: "🐕 Bulldog", price: "$17.900"},
+               
+            ],
+            "🇨🇱 Piscos": [
+                {name: "🌊 Mistral 35°", price: "$11.000"},
+                {name: "⚡ Mistral 40°", price: "$11.500"},
+                {name: "🏆 Mistral Nobel", price: "$13.000"},
+                {name: "🍎 Mistral Nobel Apple", price: "$13.500"},
+                {name: "🔥 Mistral Nobel Fire", price: "$13.500"},
+                {name: "⛰️ Alto del Carmen 35°", price: "$10.500"},
+                {name: "🌟 Alto del Carmen 40°", price: "$12.000"},
+                {name: "💧 Alto del Carmen Transparente", price: "$12.000"},
+                {name: "⚫ Alto del Carmen Etiqueta Negra", price: "$12.000"},
+                {name: "🌅 Horcón Quemado 35° 1 Año", price: "$11.500"},
+                {name: "🥃 Horcón Quemado 40° 2 Años", price: "$12.000"},
+                {name: "🏔️ Waqar 40°", price: "$17.500"},
+                {name: "🎖️ Gobernador 40°", price: "$11.500"}
+            ],
+            "🏝️ Rones": [
+                {name: "🇨🇺 Havana Club 7 Años", price: "$12.000"},
+                {name: "⭐ Havana Club Especial", price: "$10.000"},
+                {name: "💎 Havana Club Reserva", price: "$11.000"},
+                {name: "🎂 Pampero Aniversario", price: "$15.500"}
+            ],
+            "❄️ Vodkas": [
+                {name: "💯 Absolut 100", price: "$19.000"},
+                {name: "🇸🇪 Absolut Original", price: "$11.000"},
+                {name: "🌈 Absolut Sabores", price: "$12.000"},
+                {name: "🇷🇺 Stolichnaya", price: "$11.000"}
+            ],
+            "🍷 Vinos Tintos": [
+                {name: "🍷 Tarapacá Gran Reserva", price: "$24.990"},
+                {name: "⛪ Misiones de Rengo Cuvée", price: "$26.990"}
+            ],
+            "🥂 Vinos Blancos": [
+                {name: "🍷 Tarapacá Gran Reserva", price: "$24.990"},
+                {name: "⛪ Misiones de Rengo Cuvée", price: "$26.990"}
+            ],
+            "🌸 Vinos Rosé": [
+                {name: "🌹 Casillero del Diablo", price: "$24.990"},
+                {name: "⛪ Misiones de Rengo", price: "$21.990"}
+            ],
+            "🍇 Vinos Sauvignon Blanc": [
+                {name: "🌊 Leyda", price: "$22.990"},
+                {name: "🍇 Tarapacá", price: "$19.990"}
+            ],
+            "🥂 Vinos Chardonnay": [
+                {name: "🌊 Leyda Pinot Rose", price: "$24.990"},
+                {name: "🌊 Leyda Reserva", price: "$22.990"}
+            ],
+            "🍷 Vinos Carmenere": [
+                {name: "🦁 Tarapacá León", price: "$18.990"},
+                {name: "⛪ Misiones de Rengo Cuvée", price: "$24.990"}
+            ],
+            "🍷 Vinos Cabernet Sauvignon": [
+                {name: "🍇 Tarapacá Reserva", price: "$18.990"},
+                {name: "🍷 Tarapacá Gran Reserva", price: "$21.990"}
+            ],
+            "🍾 Espumantes": [
+                {name: "🥂 Undurraga Brut", price: "$15.990"},
+                {name: "🌸 Undurraga Rosé", price: "$16.990"},
+                {name: "🍾 Riccadonna 750cc Variedades", price: "$26.990"},
+                {name: "🥂 Riccadonna 200cc Variedades", price: "$7.990"}
+            ],
+            "🍺 Cervezas Schop": [
+                {name: "⚫ Kross Stout", price: "$11.500"},
+                {name: "🦬 Kunstmann Torobayo", price: "$11.500"},
+                {name: "🫐 Austral Calafate", price: "$11.500"},
+                {name: "🟢 Heineken", price: "$10.000"},
+                {name: "🇮🇹 Peroni", price: "$10.000"},
+                {name: "⭐ Stella Artois", price: "$9.500"},
+                {name: "🇺🇸 Budweiser", price: "$9.500"},
+                {name: "👑 Royal", price: "$9.500"},
+                {name: "🇦🇷 Quilmes", price: "$9.000"}
+            ],
+            "🍻 Cervezas Botellin": [
+                {name: "🍺 Kunstmann Variedades", price: "$11.000"},
+                {name: "🍺 Austral Variedades", price: "$11.000"},
+                {name: "🇲🇽 Corona", price: "$7.000"},
+                {name: "⭐ Stella", price: "$6.500"},
+                {name: "🟢 Heineken", price: "$6.500"},
+                {name: "☀️ Sol", price: "$6.500"},
+                {name: "🛡️ Royal Guard", price: "$6.500"},
+                {name: "🇺🇸 Budweiser", price: "$6.500"}
+            ],
+            "🌶️ Preparaciones de Cerveza": [
+                {name: "🧂 Chelada", price: "$2.000"},
+                {name: "🌶️ Michelada", price: "$2.000"},
+                {name: "🔥 Todos los Poderes", price: "$3.000"}
+            ],
+            "🚗 Cervezas Sin Alcohol": [
+                {name: "🟢 Heineken Sin Alcohol", price: "$7.000"},
+                {name: "🇲🇽 Corona Sin Alcohol", price: "$7.000"},
+                {name: "⭐ Stella Sin Alcohol", price: "$7.000"},
+                {name: "🇺🇸 Budweiser Sin Alcohol", price: "$7.000"},
+                {name: "🍺 Kunstmann Sin Alcohol", price: "$8.000"}
+            ],
+            "🥤 Bebidas Sin Alcohol": [
+                {name: "🍒 Shirley Temple", price: "$5.490"},
+                {name: "☕ Coffee Tonic Naranja", price: "$4.990"},
+                {name: "✨ Musa Spritz", price: "$5.990"}
+            ],
+            "🍹 Jugos Naturales": [
+                {name: "💛 Maracuyá", price: "$4.490"},
+                {name: "🥭 Mango", price: "$4.490"},
+                {name: "🍓 Frutilla", price: "$4.490"},
+                {name: "🍍 Piña", price: "$4.490"},
+                {name: "🍈 Guayaba", price: "$4.490"},
+                {name: "🫐 Frutos Rojos", price: "$4.490"},
+                {name: "🍋 Limonada Tradicional", price: "$3.990"},
+                {name: "🌿 Limonada Menta y Jengibre", price: "$4.490"}
+            ],
+            "☕ Cafetería Caliente": [
+                {name: "☕ Ristretto", price: "$1.990"},
+                {name: "☕ Espresso", price: "$2.590"},
+                {name: "☕ Espresso Lungo", price: "$2.590"},
+                {name: "☕ Espresso Doble - Doppio", price: "$2.990"},
+                {name: "☕ Americano", price: "$2.990"},
+                {name: "☕ Americano Doble", price: "$3.490"},
+                {name: "☕ Macchiato", price: "$2.590"},
+                {name: "☕ Latte", price: "$3.590"},
+                {name: "🍵 Challatte", price: "$3.790"},
+                {name: "☕ Cappuccino Simple", price: "$2.990"},
+                {name: "☕ Cappuccino Doble", price: "$3.990"},
+                {name: "☕ Cappuccino Vainilla", price: "$2.990"},
+                {name: "🍫 Chocolate Caliente", price: "$3.990"},
+                {name: "🍫 Mokaccino Doble", price: "$4.490"}
+            ],
+            "🧊 Cafetería Fría": [
+                {name: "🧊 Mocha Helado", price: "$4.490"},
+                {name: "🧊 Ice Caramel Macchiato", price: "$4.490"},
+                {name: "🧊 Ice Americano", price: "$2.990"},
+                {name: "🍨 Affogato", price: "$4.490"},
+                {name: "🧊 Café Helado", price: "$4.790"}
+            ],
+            "🍵 Tés": [
+                {name: "🍵 Té Supremo Tradicional", price: "$1.990"},
+                {name: "🍵 Té Supremo Premium Negro", price: "$2.290"},
+                {name: "🌿 Té Supremo Hierbas", price: "$2.290"},
+                {name: "🇬🇧 Té Twinings", price: "$2.490"}
+            ],
+            "⚡ Bebidas Energéticas y Otras": [
+                {name: "🔴 Red Bull", price: "$2.990"},
+                {name: "🌈 Red Bull Sabores", price: "$2.990"},
+                {name: "🥤 Lata de Bebida 350cc", price: "$2.490"},
+                {name: "💧 Agua Mineral 320cc", price: "$2.490"},
+                {name: "🇬🇧 Fentimans Variedades", price: "$2.990"}
+            ],
+            "🍾 Botellas": [
+                {name: "🥃 Jack Daniel N° 7", price: "$70.000"},
+                {name: "🍯 Jack Daniel Honey", price: "$80.000"},
+                {name: "🍎 Jack Daniel Apple", price: "$80.000"},
+                {name: "🔥 Jack Daniel Fire", price: "$70.000"},
+                {name: "🔴 Johnnie Walker Red", price: "$60.000"},
+                {name: "⚫ Johnnie Walker Black Label", price: "$80.000"},
+                {name: "⚫⚫ Johnnie Walker Double Black", price: "$100.000"},
+                {name: "🏆 Johnnie Walker Gold Label", price: "$150.000"},
+                {name: "💎 Johnnie Walker Blue Label", price: "$450.000"},
+                {name: "👑 Chivas Regal 12 Años", price: "$80.000"},
+                {name: "🏅 Chivas Regal 18 Años", price: "$150.000"},
+                {name: "💰 Chivas Regal 21 Años", price: "$450.000"},
+                {name: "🥃 Ballantine Finest", price: "$60.000"},
+                {name: "🇨🇺 Havana Especial", price: "$50.000"},
+                {name: "💎 Havana Reserva", price: "$60.000"},
+                {name: "7️⃣ Havana 7 Años", price: "$60.000"},
+                {name: "🌊 Mistral 35°", price: "$40.000"},
+                {name: "⚡ Mistral 40°", price: "$45.000"},
+                {name: "🏆 Mistral Nobel 40°", price: "$55.000"},
+                {name: "🍎 Mistral Manzana", price: "$60.000"},
+                {name: "⛰️ Alto del Carmen 35°", price: "$35.000"},
+                {name: "💧 Alto del Carmen Blanco", price: "$50.000"},
+                {name: "🌟 Alto del Carmen 40°", price: "$45.000"},
+                {name: "🌅 Horcón Quemado 35°", price: "$50.000"},
+                {name: "🥃 Horcón Quemado 40°", price: "$55.000"},
+                {name: "🇸🇪 Absolut Original", price: "$50.000"},
+                {name: "🌈 Absolut Sabores", price: "$55.000"},
+                {name: "🍾 Espumantes Variedades", price: "$25.000"},
+                {name: "🥂 Espumantes Riccadonna", price: "$30.000"}
+            ]
+        };
+
+        function createMenu() {
+            const container = document.getElementById('menuContainer');
+            
+            for (const [category, items] of Object.entries(menuData)) {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                
+                const categoryHeader = document.createElement('div');
+                categoryHeader.className = 'category-header';
+                categoryHeader.innerHTML = `
+                    <h2>${category}</h2>
+                    <span class="arrow">▼</span>
+                `;
+                
+                const categoryContent = document.createElement('div');
+                categoryContent.className = 'category-content';
+                
+                items.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'item';
+                    
+                    const itemHeader = document.createElement('div');
+                    itemHeader.className = 'item-header';
+                    itemHeader.innerHTML = `
+                        <span class="item-name">${item.name}</span>
+                        <span class="item-price">${item.price}</span>
+                    `;
+                    
+                    itemDiv.appendChild(itemHeader);
+                    categoryContent.appendChild(itemDiv);
+                });
+                
+                categoryHeader.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    categoryContent.classList.toggle('active');
+                });
+                
+                categoryDiv.appendChild(categoryHeader);
+                categoryDiv.appendChild(categoryContent);
+                container.appendChild(categoryDiv);
+            }
+        }
+
+        createMenu();
+    </script>
+</body>
+</html>
